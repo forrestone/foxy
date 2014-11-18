@@ -78,6 +78,15 @@ function init(target, config) {
             if (urlObj.port && urlObj.port !== 443) {
                 override = urlObj.hostname + ':' + urlObj.port;
             }
+            
+             if(typeof(res.headers['set-cookie'])!=='undefined'){
+            var urlArray = (opts.host).split('.'),
+                urlArarylength =  urlArray.length;
+            var domain =  urlArray[urlArarylength-2].concat('.',urlArray[urlArarylength-1]);
+            for (var i = res.headers['set-cookie'].length-1;i>=0;i-- ){
+               res.headers['set-cookie'][i] = res.headers['set-cookie'][i].replace('domain='+domain,'proxy.host');
+            };          
+            
             res.headers.location = res.headers.location.replace(override, host);
         }
 
