@@ -10,19 +10,20 @@ var port;
 var server;
 var url;
 
-module.exports.start = function (_string, _url, done) {
+module.exports.start = function (_string, _url, done, config) {
+    config = config || {};
     string = _string;
     url = _url;
     ports.getPorts(1).then(function (ports) {
         port = ports[0];
-        var servers = proxy();
+        var servers = proxy(config);
         done(ports[0], servers.proxy, servers.socketio, servers.app);
     }).catch(function (err) {
         console.log(err);
     });
 };
 
-function proxy () {
+function proxy (config) {
 
     var testApp = connect();
 
@@ -32,8 +33,7 @@ function proxy () {
 
     // Fake server
     server = http.createServer(testApp).listen(port);
-
-    var proxy = foxy("http://localhost:" + port);
+    var proxy = foxy("http://localhost:" + port, config);
 
     var socketio = socket.listen(proxy, {log: false});
 

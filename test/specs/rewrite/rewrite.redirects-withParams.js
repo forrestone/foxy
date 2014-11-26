@@ -8,16 +8,9 @@ var multi   = require("multiline");
 
 var helper = require("./helper");
 
-describe("Handling redirects with rules", function(){
+describe("Handling redirects", function(){
 
     var proxy, socketio, port, base;
-    
-    var config = {
-        redirectRules : {
-            match : "localhost",
-            location : "127.0.0.2"
-        }
-    }
 
     before(function (done) {
         base = multi.stripIndent(function () {/*
@@ -38,7 +31,7 @@ describe("Handling redirects with rules", function(){
                 next();
             });
             done();
-        },config);
+        });
     });
 
     after(function () {
@@ -50,7 +43,7 @@ describe("Handling redirects with rules", function(){
             .get("/hello")
             .set("accept", "text/html")
             .end(function (err, res) {
-                assert.equal(res.headers.location, "http://127.0.0.2/shane");
+                assert.equal(res.headers.location, "http://127.0.0.1:"+proxyPort+"/shane");
                 done();
             });
     });
