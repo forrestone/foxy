@@ -72,7 +72,9 @@ function init(target, config) {
 
     // Remove headers
     proxyServer.on("proxyRes", function (res) {
-       hostDomain = hostDomain || host.split(':')[0];
+         if (host){
+                hostDomain = hostDomain || host.split(':')[0];
+            }
         var override = urlObj.hostname;
 
         if (res.statusCode === 302 || res.statusCode === 301) {
