@@ -16,6 +16,7 @@ function init(target, config) {
     config = config || {};
     var urlObj      = url.parse(target);
     var target      = urlObj.protocol + "//" + urlObj.hostname;
+    var hostDomain;
 
     if (urlObj.port) {
         target += ":" + urlObj.port;
@@ -71,7 +72,7 @@ function init(target, config) {
 
     // Remove headers
     proxyServer.on("proxyRes", function (res) {
-
+       hostDomain = hostDomain || host.split(':')[0];
         var override = urlObj.hostname;
 
         if (res.statusCode === 302 || res.statusCode === 301) {
@@ -92,7 +93,7 @@ function init(target, config) {
                 urlArarylength =  urlArray.length;
             var domain =  urlArray[urlArarylength-2].concat('.',urlArray[urlArarylength-1]);
             for (var i = res.headers['set-cookie'].length-1;i>=0;i-- ){
-               res.headers['set-cookie'][i] = res.headers['set-cookie'][i].replace('domain='+domain,'proxy.host');
+               res.headers['set-cookie'][i] = res.headers['set-cookie'][i].replace('domain='+domain,hostDomain);
             };          
         }
         utils.removeHeaders(res.headers, ["content-length", "content-encoding"]);
